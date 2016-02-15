@@ -10,13 +10,13 @@ public class Vigenere {
     public static void main(String[] args) {
 	Scanner scan = new Scanner(System.in);
 	char mode = ' ';
-	
+
 	while (mode != 'E' && mode != 'D')
 	{
 	    System.out.print("(E)ncrypt or (D)ecrypt? ");
 	    mode = scan.next().toUpperCase().charAt(0);
 	}
-	
+
 	scan.nextLine();
 	String plaintext, ciphertext, key;
 	switch (mode){
@@ -27,7 +27,7 @@ public class Vigenere {
 	    key = scan.nextLine();
 	    System.out.println(encrypt(plaintext, key));
 	    break;
-	    
+
 	case 'D':
 	    System.out.print("Enter ciphertext: ");
 	    ciphertext = scan.nextLine();
@@ -37,7 +37,7 @@ public class Vigenere {
 	    break;
 	}
     }
-    
+
     private static String encrypt(String message, String key) {
 	//pad key length to be at least as long as the message
 	key = padKey(key, message.length());
@@ -78,15 +78,18 @@ public class Vigenere {
 
 	for (int i = 0; i < message.length(); i++) {
 	    int character = message.charAt(i);
-	    character -= (int)'A';
-	    character += shift[i];
-	    
-	    while (character < 0) {
-		character += 26;
+
+	    if (character >= 'A' && character <= 'Z') {
+		character -= (int)'A';
+		character += shift[i];
+
+		while (character < 0) {
+		    character += 26;
+		}
+
+		character %= 26;
+		character += (int)'A';
 	    }
-	    
-	    character %= 26;
-	    character += (int)'A';
 	    out.append((char)character);
 	}
 
