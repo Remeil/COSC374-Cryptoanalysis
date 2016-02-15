@@ -11,12 +11,13 @@ public class Vigenere {
 	Scanner scan = new Scanner(System.in);
 	char mode = ' ';
 	
-	while (mode != 'E' || mode != 'D')
+	while (mode != 'E' && mode != 'D')
 	{
 	    System.out.print("(E)ncrypt or (D)ecrypt? ");
 	    mode = scan.next().toUpperCase().charAt(0);
 	}
 	
+	scan.nextLine();
 	String plaintext, ciphertext, key;
 	switch (mode){
 	case 'E':
@@ -78,6 +79,11 @@ public class Vigenere {
 	    int character = message.charAt(i);
 	    character -= (int)'A';
 	    character += shift[i];
+	    
+	    while (character < 0) {
+		character += 26;
+	    }
+	    
 	    character %= 26;
 	    character += (int)'A';
 	    out.append((char)character);
