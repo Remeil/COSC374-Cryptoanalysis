@@ -41,6 +41,7 @@ public class Vigenere {
     private static String encrypt(String message, String key) {
 	//pad key length to be at least as long as the message
 	key = padKey(key, message.length());
+	message = message.toUpperCase();
 
 	int[] shiftArray = new int[key.length()];
 	for (int i = 0; i < key.length(); i++) {
