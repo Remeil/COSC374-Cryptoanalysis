@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 /*
@@ -18,22 +19,51 @@ public class Vigenere {
 	}
 
 	scan.nextLine();
-	String plaintext, ciphertext, key;
+	String plaintext = "", ciphertext = "", key;
+	boolean success = false;
 	switch (mode){
 	case 'E':
-	    System.out.print("Enter plaintext: ");
-	    plaintext = scan.nextLine();
+	    while (plaintext.equals(""))
+	    {
+		try {
+		    System.out.print("Enter plaintext file: ");
+		    plaintext = FileOps.readFile(scan.nextLine());
+		} catch (IOException e) {}
+	    }
+	    
 	    System.out.print("Enter key: ");
 	    key = scan.nextLine();
-	    System.out.println(encrypt(plaintext, key));
+	    while (!success)
+	    {
+		try {
+		    System.out.print("Enter output file: ");
+		    FileOps.writeFile(scan.nextLine(), encrypt(plaintext, key));
+		    System.out.println("Done!");
+		    success = true;
+		} catch (IOException e) {}
+	    }
 	    break;
 
 	case 'D':
-	    System.out.print("Enter ciphertext: ");
-	    ciphertext = scan.nextLine();
+	    while (ciphertext.equals(""))
+	    {
+		try {
+		    System.out.print("Enter ciphertext file: ");
+		    ciphertext = FileOps.readFile(scan.nextLine());
+		} catch (IOException e) {}
+	    }
+	    
 	    System.out.print("Enter key: ");
 	    key = scan.nextLine();
-	    System.out.println(decrypt(ciphertext, key));
+	    while (!success)
+	    {
+		try {
+		    System.out.print("Enter output file: ");
+		    FileOps.writeFile(scan.nextLine(), decrypt(ciphertext, key));
+		    System.out.println("Done!");
+		    success = true;
+		} catch (IOException e) {}
+	    }
 	    break;
 	}
     }
