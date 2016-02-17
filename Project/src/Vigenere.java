@@ -66,6 +66,8 @@ public class Vigenere {
 	    }
 	    break;
 	}
+	
+	scan.close();
     }
 
     private static String encrypt(String message, String key) {
