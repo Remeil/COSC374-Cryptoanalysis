@@ -16,7 +16,7 @@ public class Analysis {
 	while (mode != 'L' && mode != 'D')
 	{
 	    System.out.print("(L)etter or (D)igraph frequency? ");
-	    mode = scan.next().toUpperCase().charAt(0);
+	    mode = scan.nextLine().toUpperCase().charAt(0);
 	}
 
 	String plaintextToAnalyze = "";
@@ -37,6 +37,27 @@ public class Analysis {
 	    }
 	    catch (IOException e){}
 	}
+
+
+	HashMap<String, Double> plainFreqMap = null;
+	HashMap<String, Double> cipherFreqMap = null;
+
+	switch (mode) {
+	case 'L':
+	    plainFreqMap = ComputeRelativeFrequencyLetters(plaintextToAnalyze);
+	    cipherFreqMap = ComputeRelativeFrequencyLetters(ciphertextToAnalyze);
+	    break;
+	case 'D':
+	    plainFreqMap = ComputeRelativeFrequencyDigraphs(plaintextToAnalyze);
+	    cipherFreqMap = ComputeRelativeFrequencyDigraphs(ciphertextToAnalyze);
+	    break;
+	}
+
+	System.out.println("Plaintext Histogram: ");
+	drawHistogram(plainFreqMap);
+
+	System.out.println("\nCiphertext Histogram: ");
+	drawHistogram(cipherFreqMap);
     }
 
     private static HashMap<String, Double> ComputeRelativeFrequencyLetters(String text) {
@@ -45,62 +66,98 @@ public class Analysis {
 
 	for (int i = 0; i < length; i++) {
 	    char character = text.charAt(i);
-	    
-	    if ((character >= 'A' && character <= 'Z') || character == ' ')
+
+	    if ((character >= 'A' && character <= 'Z'))
 	    {
-		int freq = freqMap.get(character) + 1;
+		int freq;
+		if (freqMap.get(Character.toString(character)) == null) {
+		    freq = 1;
+		}
+		else {
+		    freq = freqMap.get(Character.toString(character)) + 1;
+		}
 		freqMap.put(Character.toString(character), freq);
 	    }
 	}
 
 	HashMap<String, Double> relativeFreqMap = new HashMap<String, Double>();
 	long totalFreq = 0;
-	
+
 	for (Entry<String, Integer> entry : freqMap.entrySet()) {
 	    totalFreq += entry.getValue();
 	}
-	
+
 	for (Entry<String, Integer> entry : freqMap.entrySet()) {
 	    double relativeFreq = (double)entry.getValue() / (double)totalFreq;
 	    relativeFreqMap.put(entry.getKey(), relativeFreq);
 	}
-	
+
 	return relativeFreqMap;
     }
-    
+
     private static HashMap<String, Double> ComputeRelativeFrequencyDigraphs(String text) {
 	long length = text.length();
-	
+
 	if (length <= 1) {
 	    return new HashMap<String, Double>();
 	}
-	
+
 	HashMap<String, Integer> freqMap = new HashMap<String, Integer>();
 
 	for (int i = 0; i < length - 1; i++) {
 	    char character1 = text.charAt(i);
 	    char character2 = text.charAt(i+1);
-	    
-	    if (((character1 >= 'A' && character1 <= 'Z') || character1 == ' ') &&
-	       ((character2 >= 'A' && character2 <= 'Z') || character2 == ' '))
+
+	    if (((character1 >= 'A' && character1 <= 'Z')) &&
+		((character2 >= 'A' && character2 <= 'Z')))
 	    {
-		int freq = freqMap.get(character1 + character2) + 1;
+		int freq;
+		if (freqMap.get("" + character1 + character2) == null) {
+		    freq = 1;
+		}
+		else {
+		    freq = freqMap.get("" + character1 + character2) + 1;
+		}
+		
 		freqMap.put(("" + character1 + character2), freq);
 	    }
 	}
 
 	HashMap<String, Double> relativeFreqMap = new HashMap<String, Double>();
 	long totalFreq = 0;
-	
+
 	for (Entry<String, Integer> entry : freqMap.entrySet()) {
 	    totalFreq += entry.getValue();
 	}
-	
+
 	for (Entry<String, Integer> entry : freqMap.entrySet()) {
 	    double relativeFreq = (double)entry.getValue() / (double)totalFreq;
 	    relativeFreqMap.put(entry.getKey(), relativeFreq);
 	}
-	
+
 	return relativeFreqMap;
+    }
+
+    private static void drawHistogram(HashMap<String, Double> map) {
+	double maximumRelativeFrequency = 0;
+
+	for (Entry<String, Double> entry : map.entrySet()) {
+	    if (maximumRelativeFrequency < entry.getValue()) {
+		maximumRelativeFrequency = entry.getValue();
+	    }
+	}
+
+	for (Entry<String, Double> entry : map.entrySet()) {
+	    System.out.print(entry.getKey() + ": ");
+	    
+	    System.out.printf("%5.2f%% : ", entry.getValue()*100);
+	    
+	    int stars = (int)((entry.getValue() / maximumRelativeFrequency) * 70.0);
+	    for (int i = 0; i < stars; i++)
+	    {
+		System.out.print("*");
+	    }
+	    System.out.println();
+	}
     }
 }
