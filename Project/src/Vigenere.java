@@ -12,17 +12,19 @@ public class Vigenere {
 	Scanner scan = new Scanner(System.in);
 	char mode = ' ';
 
+	//Determine encryption or decryption mode.
 	while (mode != 'E' && mode != 'D')
 	{
 	    System.out.print("(E)ncrypt or (D)ecrypt? ");
-	    mode = scan.next().toUpperCase().charAt(0);
+	    mode = scan.nextLine().toUpperCase().charAt(0);
 	}
 
-	scan.nextLine();
 	String plaintext = "", ciphertext = "", key;
 	boolean success = false;
 	switch (mode){
+	//Encrypt
 	case 'E':
+	    //Ensure we get a file.
 	    while (plaintext.equals(""))
 	    {
 		try {
@@ -33,6 +35,7 @@ public class Vigenere {
 	    
 	    System.out.print("Enter key: ");
 	    key = scan.nextLine();
+	    //Ensure file was written to.
 	    while (!success)
 	    {
 		try {
@@ -44,7 +47,9 @@ public class Vigenere {
 	    }
 	    break;
 
+	//Decrypt
 	case 'D':
+	    //Ensure we get a file.
 	    while (ciphertext.equals(""))
 	    {
 		try {
@@ -55,6 +60,7 @@ public class Vigenere {
 	    
 	    System.out.print("Enter key: ");
 	    key = scan.nextLine();
+	    //Ensure file was written to.
 	    while (!success)
 	    {
 		try {
@@ -70,12 +76,14 @@ public class Vigenere {
 	scan.close();
     }
 
+    //Given a message and a key, encrypt it using the vigenere cipher.
     private static String encrypt(String message, String key) {
 	//pad key length to be at least as long as the message
 	key = padKey(key, message.length());
 	message = message.toUpperCase();
 
 	int[] shiftArray = new int[key.length()];
+	//Use the key to determine how much each character must be shifted.
 	for (int i = 0; i < key.length(); i++) {
 	    shiftArray[i] = key.charAt(i) - (int)'A';
 	}
@@ -83,12 +91,14 @@ public class Vigenere {
 	return shift(message, shiftArray);
     }
 
+    //Given a message and a key, decrypt it using the vigenere cipher.
     private static String decrypt(String message, String key) {
 	//pad key length to be at least as long as the message
 	key = padKey(key, message.length());
 
 	int[] shiftArray = new int[key.length()];
 	for (int i = 0; i < key.length(); i++) {
+	    //Use the key to determine how much each character must be shifted.
 	    shiftArray[i] = key.charAt(i) - (int)'A';
 	    shiftArray[i] *= -1;
 	}
@@ -97,6 +107,7 @@ public class Vigenere {
     }
 
 
+    //Given a key, pad it to the specified length.
     private static String padKey(String key, int length) {
 	while (key.length() < length) {
 	    key += key;
@@ -105,12 +116,14 @@ public class Vigenere {
 	return key.toUpperCase();
     }
 
+    //Given a message, shift each character by the number of places indicated in shift.
     private static String shift(String message, int[] shift) {
 	StringBuilder out = new StringBuilder();
 
 	for (int i = 0; i < message.length(); i++) {
 	    int character = message.charAt(i);
 
+	    //Shift the character by the specified shift.
 	    if (character >= 'A' && character <= 'Z') {
 		character -= (int)'A';
 		character += shift[i];
